@@ -9,13 +9,20 @@ export class EquipoService {
   integrantes: Integrante[] = [];
 
   constructor(){
-    const integrante1 = new Integrante(
-      '187212936',
-      'Diego Donat',
-      areasEquipo.BACKEND,
-      false
-    );
-    this.integrantes.push(integrante1);
+    this.integrantes = [
+      new Integrante('19747126-3', 'Diego Andrés Madrid Martinez', areasEquipo.UX_UI, false),
+      new Integrante('13929090-9', 'Cecilia María Melillán Furicoyán', areasEquipo.UX_UI, true),
+      new Integrante('27896261-K', 'Rosa Guadalupe Quintero Abreu', areasEquipo.UX_UI, false),
+      new Integrante('19846279-9', 'Fabian Esteban Herrera Villagra', areasEquipo.FRONTEND, false),
+      new Integrante('17317031-9', 'Cristian Alonso Olivares Herrera', areasEquipo.FRONTEND, false),
+      new Integrante('18064090-8', 'Michelle Carolina Navia Zuñiga', areasEquipo.FRONTEND, true),
+      new Integrante('18721293-6', 'Diego Hernán Donat Riquelme', areasEquipo.BACKEND, false),
+      new Integrante('', 'Andrés Jara', areasEquipo.BACKEND, true),
+      new Integrante('20146231-2', 'Valentina Constanza Villanueva Ortiz', areasEquipo.BACKEND, false),
+      new Integrante('13434211-0', 'Ermin José Volke Gaete', areasEquipo.BACKEND, false),
+      new Integrante('19468722-2', 'Camilo Casanova', areasEquipo.MOBILE, true),
+      new Integrante('16519431-4', 'Alejandro Leonardo Del Campo Orozco', areasEquipo.MOBILE, false)
+    ]
   }
 
   getIntegrantesArea(area: areasEquipo): Integrante[]{
