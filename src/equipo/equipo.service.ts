@@ -25,6 +25,8 @@ export class EquipoService {
     ]
   }
 
+
+
   //Filtrar integrantes segun su area, indicando quien es el lider de dicha area
   getIntegrantesArea(area: areasEquipo): Integrante[] {
     let integrantesConsultados: Integrante[] = this.integrantes.filter((integrante) => integrante.area == area);
@@ -54,9 +56,28 @@ export class EquipoService {
     }
   }
 
-  //Lista de cada area con su respectivo integrante
+  //crear una Lista de cada area con su respectivo integrante
+  getIntegrantesPorArea(): string  {
+    const integrantesPorArea  ,(areasEquipo ); Integrante[integrantesPorArea]  = {
+      UX_UI: [new Integrante('19747126-3', 'Diego Andrés Madrid Martinez', areasEquipo.UX_UI, false), new Integrante('13929090-9', 'Cecilia María Melillán Furicoyán', areasEquipo.UX_UI, true), new Integrante('27896261-K', 'Rosa Guadalupe Quintero Abreu', areasEquipo.UX_UI, false)],
+      FRONTEND: [new Integrante('19846279-9', 'Fabian Esteban Herrera Villagra', areasEquipo.FRONTEND, false), new Integrante('17317031-9', 'Cristian Alonso Olivares Herrera', areasEquipo.FRONTEND, false), new Integrante('18064090-8', 'Michelle Carolina Navia Zuñiga', areasEquipo.FRONTEND, true)],
+      BACKEND: [new Integrante('18721293-6', 'Diego Hernán Donat Riquelme', areasEquipo.BACKEND, true), new Integrante('17010245-2', 'Andrés Jara Espinoza', areasEquipo.BACKEND, false), new Integrante('20146231-2', 'Valentina Constanza Villanueva Ortiz', areasEquipo.BACKEND, false), new Integrante('13434211-0', 'Ermin José Volke Gaete', areasEquipo.BACKEND, false)],
+      MOBILE: [new Integrante('19468722-2', 'Camilo Casanova', areasEquipo.MOBILE, true), new Integrante('16519431-4', 'Alejandro Leonardo Del Campo Orozco', areasEquipo.MOBILE, false)]
+    };
+
+    this.integrantes.forEach(integrante => {
+      integrantesPorArea[integrante.area].push(integrante);
+    });
+
+    return 'integrantes por area';
+  }
+
 
   //Informacion del E-Commerce /nombre, descrpción, tipo y objetivos)
+  getEcommerce(): string {
+    return 'nombre: Tatapp, Plataforma E-commerce, Tipo: B&C, Objetivos: Crear una plataforma de e-commerce que permita a los usuarios comprar productos de manera fácil y rápida.';
+  }
+
 
   create(createEquipoDto: CreateEquipoDto) {
     return 'This action adds a new equipo';
@@ -78,4 +99,4 @@ export class EquipoService {
     return `This action removes a #${id} equipo`;
   }
 }
-}
+
