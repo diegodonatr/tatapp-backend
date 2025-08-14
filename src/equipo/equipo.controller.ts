@@ -18,9 +18,11 @@ export class EquipoController {
   getTodosLosIntegrantes(): Integrante[] {
     return this.equipoService.getTodosLosIntegrantes();
   }
-
   //De acuerdo con un rut, retornar el integrante al que corresponde
-
+  @Get(`:filtrar-rut`)
+  getFiltrarPorRut(@Param("rut") rut: string):  Integrante {
+    return this.equipoService.GetfiltrarPorRut({rut} as Integrante);
+  }
 
   //Lista de cada area con su respectivo integrante
 

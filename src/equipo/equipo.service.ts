@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEquipoDto } from './dto/create-equipo.dto';
 import { UpdateEquipoDto } from './dto/update-equipo.dto';
 import { areasEquipo } from './enum/areas-equipo.enum';
@@ -45,6 +45,14 @@ export class EquipoService {
     return this.integrantes;
   }
   //De acuerdo con un rut, retornar el integrante al que corresponde
+  GetfiltrarPorRut(integrante: Integrante): Integrante {
+    const intg = this.integrantes.find(i => i.rut === integrante.rut)
+    if(intg){
+      return intg
+    } else {
+      throw new NotFoundException (`No existe integrante con rut ${integrante.rut} en este grupo`)
+    }
+  }
 
   //Lista de cada area con su respectivo integrante
 
