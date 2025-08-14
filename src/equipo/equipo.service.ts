@@ -33,7 +33,7 @@ export class EquipoService {
     return integrantesConsultados;
   }
   //Conseguir todos los integrantes del equipo, indicando si es lider o no
-  getTodosLosIntegrantes(lista: Integrante): Integrante[] {
+  getTodosLosIntegrantes(): Integrante[] {
     for (let i = 0; i < this.integrantes.length; i++) {
       const integrante = this.integrantes[i];
       if (integrante.lider) {
