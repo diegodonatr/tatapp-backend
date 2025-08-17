@@ -1,16 +1,21 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateEquipoDto } from './dto/create-equipo.dto';
+import { EquipoDto } from './dto/equipo.dto';
 import { UpdateEquipoDto } from './dto/update-equipo.dto';
 import { areasEquipo } from './enum/areas-equipo.enum';
 import { Integrante } from './entities/integrante.entity';
+import { Equipo } from './entities/equipo.entity';
+import { EquipoPryectoDto } from './dto/resumen.proyecto.dto';
 
 @Injectable()
 export class EquipoService {
   integrantes: Integrante[] = [];
+  equipo: Equipo
+
 
   constructor() {
     this.integrantes = [
       new Integrante('19747126-3', 'Diego Andrés Madrid Martinez', areasEquipo.UX_UI, false),
+      new Integrante('15206737-2', 'Juan Luis Aguilera León', areasEquipo.UX_UI, false),
       new Integrante('13929090-9', 'Cecilia María Melillán Furicoyán', areasEquipo.UX_UI, true),
       new Integrante('27896261-K', 'Rosa Guadalupe Quintero Abreu', areasEquipo.UX_UI, false),
       new Integrante('19846279-9', 'Fabian Esteban Herrera Villagra', areasEquipo.FRONTEND, false),
@@ -20,20 +25,72 @@ export class EquipoService {
       new Integrante('17010245-2', 'Andrés Jara Espinoza', areasEquipo.BACKEND, false),
       new Integrante('20146231-2', 'Valentina Constanza Villanueva Ortiz', areasEquipo.BACKEND, false),
       new Integrante('13434211-0', 'Ermin José Volke Gaete', areasEquipo.BACKEND, false),
-      new Integrante('19468722-2', 'Camilo Casanova', areasEquipo.MOBILE, true),
+      new Integrante('19468722-2', 'Camilo Gabriel Casanova Gallegos', areasEquipo.MOBILE, true),
       new Integrante('16519431-4', 'Alejandro Leonardo Del Campo Orozco', areasEquipo.MOBILE, false)
     ]
+    const lideres: Integrante[] = this.integrantes.filter(i => i.lider === true);
+
+    this.equipo = new Equipo(
+      'Equipo Dante',
+      [areasEquipo.UX_UI, areasEquipo.FRONTEND, areasEquipo.BACKEND, areasEquipo.MOBILE],
+      this.integrantes,
+      lideres
+    );
   }
 
+  //Informacion del equipo
+  getInformacionEquipo(): EquipoPryectoDto {
+    const areasResumen: EquipoDto[] = [];
 
+    for (const area in areasEquipo) {
+      const nombreArea = areasEquipo[area];
+
+      const integrantesArea: string[] = [];
+      let lider = '';
+
+      for (const integrante of this.equipo.integrante) {
+        if (integrante.area === nombreArea) {
+          integrantesArea.push(integrante.nombre);
+
+          if (integrante.lider === true) {
+            lider = integrante.nombre;
+          }
+        }
+      }
+
+      if (integrantesArea.length > 0) {
+        const areaResumen: EquipoDto = {
+          area: nombreArea,
+          integrantes: integrantesArea,
+          lider: lider,
+        };
+
+        areasResumen.push(areaResumen);
+      }
+    }
+
+    return {
+      nombreProyecto: this.equipo.nombreEquipo,
+      areas: areasResumen,
+    }
+  }
 
   //Filtrar integrantes segun su area, indicando quien es el lider de dicha area
   getIntegrantesArea(area: areasEquipo): Integrante[] {
-    let integrantesConsultados: Integrante[] = this.integrantes.filter((integrante) => integrante.area == area);
-    let liderArea: Integrante = integrantesConsultados.find((integrante) => integrante.lider == true)!;
-    console.log(`El lider del equipo es: ${liderArea}`)
+    const integrantesConsultados = this.integrantes.filter((integrante) => integrante.area === area);
+    if (integrantesConsultados.length === 0) {
+      throw new NotFoundException(`No hay integrante para el área ${area}`);
+    }
+
+    const liderArea = integrantesConsultados.find((integrante) => integrante.lider == true);
+    if (!liderArea) {
+      throw new NotFoundException(`No hay hay lider definido para esta área`);
+    }
+
+    console.log(`El lider del área ${area} es: ${liderArea.nombre}`)
     return integrantesConsultados;
   }
+
   //Conseguir todos los integrantes del equipo, indicando si es lider o no
   getTodosLosIntegrantes(): Integrante[] {
     for (let i = 0; i < this.integrantes.length; i++) {
@@ -46,57 +103,46 @@ export class EquipoService {
     }
     return this.integrantes;
   }
+
   //De acuerdo con un rut, retornar el integrante al que corresponde
-  GetfiltrarPorRut(integrante: Integrante): Integrante {
-    const intg = this.integrantes.find(i => i.rut === integrante.rut)
-    if(intg){
+  GetfiltrarPorRut(rut: string): Integrante {
+    const intg = this.integrantes.find(i => i.rut === rut)
+    if (intg) {
       return intg
     } else {
-      throw new NotFoundException (`No existe integrante con rut ${integrante.rut} en este grupo`)
+      throw new NotFoundException(`No existe integrante con rut ${rut} en este grupo`)
     }
   }
 
   //crear una Lista de cada area con su respectivo integrante
-  getIntegrantesPorArea(): string  {
-    const integrantesPorArea  ,(areasEquipo ); Integrante[integrantesPorArea]  = {
-      UX_UI: [new Integrante('19747126-3', 'Diego Andrés Madrid Martinez', areasEquipo.UX_UI, false), new Integrante('13929090-9', 'Cecilia María Melillán Furicoyán', areasEquipo.UX_UI, true), new Integrante('27896261-K', 'Rosa Guadalupe Quintero Abreu', areasEquipo.UX_UI, false)],
-      FRONTEND: [new Integrante('19846279-9', 'Fabian Esteban Herrera Villagra', areasEquipo.FRONTEND, false), new Integrante('17317031-9', 'Cristian Alonso Olivares Herrera', areasEquipo.FRONTEND, false), new Integrante('18064090-8', 'Michelle Carolina Navia Zuñiga', areasEquipo.FRONTEND, true)],
-      BACKEND: [new Integrante('18721293-6', 'Diego Hernán Donat Riquelme', areasEquipo.BACKEND, true), new Integrante('17010245-2', 'Andrés Jara Espinoza', areasEquipo.BACKEND, false), new Integrante('20146231-2', 'Valentina Constanza Villanueva Ortiz', areasEquipo.BACKEND, false), new Integrante('13434211-0', 'Ermin José Volke Gaete', areasEquipo.BACKEND, false)],
-      MOBILE: [new Integrante('19468722-2', 'Camilo Casanova', areasEquipo.MOBILE, true), new Integrante('16519431-4', 'Alejandro Leonardo Del Campo Orozco', areasEquipo.MOBILE, false)]
+  getIntegrantesPorArea() {
+    const integrantesPorArea = {
+      UX_UI: [] as string[],
+      FRONTEND: [] as string[],
+      BACKEND: [] as string[],
+      MOBILE: [] as string[],
     };
+    for (let i = 0; i < this.integrantes.length; i++) {
+      const integrante = this.integrantes[i]
 
-    this.integrantes.forEach(integrante => {
-      integrantesPorArea[integrante.area].push(integrante);
-    });
-
-    return 'integrantes por area';
+      if (integrante.area === areasEquipo.UX_UI) {
+        integrantesPorArea.UX_UI.push(integrante.nombre);
+      } else if (integrante.area === areasEquipo.FRONTEND) {
+        integrantesPorArea.FRONTEND.push(integrante.nombre);
+      } else if (integrante.area === areasEquipo.BACKEND) {
+        integrantesPorArea.BACKEND.push(integrante.nombre);
+      } else if (integrante.area === areasEquipo.MOBILE) {
+        integrantesPorArea.MOBILE.push(integrante.nombre);
+      }
+    }
+    return integrantesPorArea
   }
 
 
   //Informacion del E-Commerce /nombre, descrpción, tipo y objetivos)
   getEcommerce(): string {
-    return 'nombre: Tatapp, Plataforma E-commerce, Tipo: B&C, Objetivos: Crear una plataforma de e-commerce que permita a los usuarios comprar productos de manera fácil y rápida.';
+    return 'nombre: Tatapp, Plataforma E-commerce, Tipo: B2C, Objetivos: Crear una plataforma de e-commerce que permita a los usuarios comprar productos de manera fácil y rápida.';
   }
 
-
-  create(createEquipoDto: CreateEquipoDto) {
-    return 'This action adds a new equipo';
-  }
-
-  findAll() {
-    return `This action returns all equipo`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} equipo`;
-  }
-
-  update(id: number, updateEquipoDto: UpdateEquipoDto) {
-    return `This action updates a #${id} equipo`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} equipo`;
-  }
 }
 

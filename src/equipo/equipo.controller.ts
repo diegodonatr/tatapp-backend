@@ -1,17 +1,24 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { EquipoService } from './equipo.service';
-import { CreateEquipoDto } from './dto/create-equipo.dto';
-import { UpdateEquipoDto } from './dto/update-equipo.dto';
 import { areasEquipo } from './enum/areas-equipo.enum';
 import { Integrante } from './entities/integrante.entity';
+import { Equipo } from './entities/equipo.entity';
+import { EquipoDto } from './dto/equipo.dto';
+import { EquipoPryectoDto } from './dto/resumen.proyecto.dto';
 
 @Controller('equipo')
 export class EquipoController {
   constructor(private readonly equipoService: EquipoService) { }
+  //Informacion equipo
+  @Get(`informacion`)
+  getInfoEquipo(): EquipoPryectoDto{
+    return this.equipoService.getInformacionEquipo()
+  }
+
   //Filtrar integrantes segun su area, indicando quien es el lider de dicha area
-  @Get('area')
-  getIntegrantesArea(@Param('area') area: areasEquipo) {
-    return this.equipoService.getIntegrantesArea(area);
+  @Get('integrante/area/:area')
+  getIntegrantesArea(@Param('area') area: string) {
+    return this.equipoService.getIntegrantesArea(area as areasEquipo);
   }
   //Conseguir todos los integrantes del equipo, indicando si es lider o no
   @Get(`integrantes`)
@@ -19,37 +26,20 @@ export class EquipoController {
     return this.equipoService.getTodosLosIntegrantes();
   }
   //De acuerdo con un rut, retornar el integrante al que corresponde
-  @Get(`:filtrar-rut`)
-  getFiltrarPorRut(@Param("rut") rut: string):  Integrante {
-    return this.equipoService.GetfiltrarPorRut({rut} as Integrante);
+  @Get(`integrante/:rut`)
+  getFiltrarPorRut(@Param("rut") rut: string): Integrante {
+    return this.equipoService.GetfiltrarPorRut(rut);
   }
 
   //Lista de cada area con su respectivo integrante
-
+  @Get(`integrante-por-area`)
+  getListaArea() {
+    return this.equipoService.getIntegrantesPorArea();
+  }
 
   //Informacion del E-Commerce /nombre, descrpción, tipo y objetivos)
-  @Post()
-  create(@Body() createEquipoDto: CreateEquipoDto) {
-    return this.equipoService.create(createEquipoDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.equipoService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.equipoService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEquipoDto: UpdateEquipoDto) {
-    return this.equipoService.update(+id, updateEquipoDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.equipoService.remove(+id);
+  @Get('ecommerce')
+  getEcommerce(): string {
+    return this.equipoService.getEcommerce();
   }
 }
