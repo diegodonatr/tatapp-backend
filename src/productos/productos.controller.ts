@@ -41,7 +41,7 @@ export class ProductosController {
 
   // GET /productos/:id/resenas?puntajeMin=3
   @Get(':id/resenas')
-  getResenia(@Param('id') id: string, @Query('puntaje') puntaje?: number) {
+  getResenia(@Param('id') id: string, @Query('puntaje') puntaje: number) {
     return this.productosService.getResenia(id, puntaje);
   }
 
