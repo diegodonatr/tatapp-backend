@@ -4,14 +4,14 @@ import { areasEquipo } from './enum/areas-equipo.enum';
 import { Integrante } from './entities/integrante.entity';
 import { Equipo } from './entities/equipo.entity';
 import { EquipoDto } from './dto/equipo.dto';
-import { EquipoPryectoDto } from './dto/resumen.proyecto.dto';
+import { EquipoProyectoDto } from './dto/resumen.proyecto.dto';
 
 @Controller('equipo')
 export class EquipoController {
   constructor(private readonly equipoService: EquipoService) { }
   //Informacion equipo
   @Get(`informacion`)
-  getInfoEquipo(): EquipoPryectoDto{
+  getInfoEquipo(): EquipoProyectoDto{
     return this.equipoService.getInformacionEquipo()
   }
 
@@ -28,7 +28,7 @@ export class EquipoController {
   //De acuerdo con un rut, retornar el integrante al que corresponde
   @Get(`integrante/:rut`)
   getFiltrarPorRut(@Param("rut") rut: string): Integrante {
-    return this.equipoService.GetfiltrarPorRut(rut);
+    return this.equipoService.GetFiltrarPorRut(rut);
   }
 
   //Lista de cada area con su respectivo integrante

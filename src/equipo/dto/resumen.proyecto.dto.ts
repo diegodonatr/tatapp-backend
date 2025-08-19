@@ -1,6 +1,6 @@
 import { EquipoDto } from "./equipo.dto"
 
-export class EquipoPryectoDto {
+export class EquipoProyectoDto {
     nombreProyecto: string;
     areas: EquipoDto[];
 }
