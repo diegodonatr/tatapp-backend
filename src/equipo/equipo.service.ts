@@ -6,6 +6,7 @@ import { Integrante } from './entities/integrante.entity';
 import { Equipo } from './entities/equipo.entity';
 import { EquipoProyectoDto } from './dto/resumen.proyecto.dto';
 import { IntegrantesPorAreaYLiderDTO } from './dto/integrantes-area-lider.dto';
+import { EcommerceDto } from './dto/ecommerce.dto';
 
 @Injectable()
 export class EquipoService {
@@ -139,8 +140,13 @@ export class EquipoService {
   } // Equipo: Acá tengo una duda si debemos entregar el objeto Integrante o Integrante.nombre. Hice una consulta al profe.
 
   //6. Informacion del E-Commerce (nombre, descripción, tipo y objetivos)
-  getEcommerce(): string {
-    return 'nombre: Tatapp, Plataforma E-commerce, Tipo: B2C, Objetivos: Crear una plataforma de e-commerce que permita a los usuarios comprar productos de manera fácil y rápida.';
+  getEcommerce(): EcommerceDto {
+    return {
+      nombre: 'Tatapp',
+      descripcion: 'Plataforma E-commerce',
+      tipo: 'B2C',
+      objetivos: ['Crear una plataforma de e-commerce que permita a los usuarios comprar productos de manera fácil y rápida.']
+    };
   }
   // Propongo llevar esto a un DTO.
 }
