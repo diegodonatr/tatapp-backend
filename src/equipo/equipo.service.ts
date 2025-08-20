@@ -1,22 +1,29 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { EquipoDto } from './dto/equipo.dto';
+import { InformacionEquipoDTO } from './dto/equipo.dto';
 import { UpdateEquipoDto } from './dto/update-equipo.dto';
 import { areasEquipo } from './enum/areas-equipo.enum';
 import { Integrante } from './entities/integrante.entity';
 import { Equipo } from './entities/equipo.entity';
-import { EquipoProyectoDto } from './dto/resumen.proyecto.dto';
 import { IntegrantesPorAreaYLiderDTO } from './dto/integrantes-area-lider.dto';
 import { EcommerceDto } from './dto/ecommerce.dto';
+import { IntegrantesPorAreaDTO } from './dto/integrantes-area.dto';
 
 @Injectable()
 export class EquipoService {
   // Inicializar variables importantes
   integrantes: Integrante[] = [];
   equipo: Equipo;
+  lideres: Integrante[];
 
   constructor() {
     // Crear listado de Integrantes del grupo
-    this.integrantes = [
+    this.inicializarIntegrantes();
+    // Crear listado de lideres
+    this.inicializarLideres();
+  }
+
+  inicializarIntegrantes() {
+      this.integrantes.push(
       new Integrante('19747126-3', 'Diego Andrés Madrid Martinez', areasEquipo.UX_UI, false),
       new Integrante('15206737-2', 'Juan Luis Aguilera León', areasEquipo.UX_UI, false),
       new Integrante('13929090-9', 'Cecilia María Melillán Furicoyán', areasEquipo.UX_UI, true),
@@ -33,53 +40,28 @@ export class EquipoService {
       
       new Integrante('19468722-2', 'Camilo Gabriel Casanova Gallegos', areasEquipo.MOBILE, true),
       new Integrante('16519431-4', 'Alejandro Leonardo Del Campo Orozco', areasEquipo.MOBILE, false)
-    ]
-    // Crear listado de lideres por área
-    const lideres: Integrante[] = this.integrantes.filter(i => i.lider === true);
+      )
+  }
 
-    // this.equipo = new Equipo(
-    //   'Equipo Dante',
-    //   [areasEquipo.UX_UI, areasEquipo.FRONTEND, areasEquipo.BACKEND, areasEquipo.MOBILE],
-    //   this.integrantes,
-    //   lideres
-    // );
+  inicializarLideres() {
+    this.lideres = this.integrantes.filter(i => i.lider === true);
   }
 
   //1. Información del equipo
-  getInformacionEquipo(): EquipoProyectoDto {
-    const areasResumen: EquipoDto[] = [];
+  getInformacionEquipo(): InformacionEquipoDTO {
+    const infoAreasIntegrantes = new IntegrantesPorAreaDTO();
+    const infoEquipo = new InformacionEquipoDTO()
 
-    for (const area in areasEquipo) {
-      const nombreArea = areasEquipo[area];
-
-      const integrantesArea: string[] = [];
-      let lider = '';
-
-      for (const integrante of this.equipo.integrante) {
-        if (integrante.area === nombreArea) {
-          integrantesArea.push(integrante.nombre);
-
-          if (integrante.lider === true) {
-            lider = integrante.nombre;
-          }
-        }
-      }
-
-      if (integrantesArea.length > 0) {
-        const areaResumen: EquipoDto = {
-          area: nombreArea,
-          integrantes: integrantesArea,
-          lider: lider,
-        };
-
-        areasResumen.push(areaResumen);
-      }
+    for (const integrante of this.integrantes) {
+      infoAreasIntegrantes[integrante.area].push(integrante);
     }
 
-    return {
-      nombreProyecto: this.equipo.nombreEquipo,
-      areas: areasResumen,
-    }
+    infoEquipo.nombre = 'Tatapp';
+    infoEquipo.areas = Object.values(areasEquipo);
+    infoEquipo.integrantes = infoAreasIntegrantes;
+    infoEquipo.lideres = this.lideres;
+
+    return infoEquipo;
   }
 
   //2. Filtrar integrantes segun su area, indicando quien es el lider de dicha area
@@ -118,26 +100,26 @@ export class EquipoService {
   //5. Crear una lista de cada area con sus respectivos integrantes
   getIntegrantesPorArea() {
     const integrantesPorArea = {
-      UX_UI: [] as string[],
-      FRONTEND: [] as string[],
-      BACKEND: [] as string[],
-      MOBILE: [] as string[],
+      UX_UI: [] as Integrante[],
+      FRONTEND: [] as Integrante[],
+      BACKEND: [] as Integrante[],
+      MOBILE: [] as Integrante[],
     };
     for (let i = 0; i < this.integrantes.length; i++) {
       const integrante = this.integrantes[i]
 
       if (integrante.area === areasEquipo.UX_UI) {
-        integrantesPorArea.UX_UI.push(integrante.nombre);
+        integrantesPorArea.UX_UI.push(integrante);
       } else if (integrante.area === areasEquipo.FRONTEND) {
-        integrantesPorArea.FRONTEND.push(integrante.nombre);
+        integrantesPorArea.FRONTEND.push(integrante);
       } else if (integrante.area === areasEquipo.BACKEND) {
-        integrantesPorArea.BACKEND.push(integrante.nombre);
+        integrantesPorArea.BACKEND.push(integrante);
       } else if (integrante.area === areasEquipo.MOBILE) {
-        integrantesPorArea.MOBILE.push(integrante.nombre);
+        integrantesPorArea.MOBILE.push(integrante);
       }
     }
     return integrantesPorArea
-  } // Equipo: Acá tengo una duda si debemos entregar el objeto Integrante o Integrante.nombre. Hice una consulta al profe.
+  }
 
   //6. Informacion del E-Commerce (nombre, descripción, tipo y objetivos)
   getEcommerce(): EcommerceDto {
@@ -148,6 +130,5 @@ export class EquipoService {
       objetivos: ['Crear una plataforma de e-commerce que permita a los usuarios comprar productos de manera fácil y rápida.']
     };
   }
-  // Propongo llevar esto a un DTO.
 }
 

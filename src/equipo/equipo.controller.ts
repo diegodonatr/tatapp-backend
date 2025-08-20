@@ -1,23 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseEnumPipe } from '@nestjs/common';
 import { EquipoService } from './equipo.service';
 import { areasEquipo } from './enum/areas-equipo.enum';
 import { Integrante } from './entities/integrante.entity';
-import { Equipo } from './entities/equipo.entity';
-import { EquipoDto } from './dto/equipo.dto';
-import { EquipoProyectoDto } from './dto/resumen.proyecto.dto';
+import { InformacionEquipoDTO } from './dto/equipo.dto';
+import { EcommerceDto } from './dto/ecommerce.dto';
 
 @Controller('equipo')
 export class EquipoController {
   constructor(private readonly equipoService: EquipoService) { }
   //Informacion equipo
-  @Get(`informacion`)
-  getInfoEquipo(): EquipoProyectoDto{
+  @Get('informacion')
+  getInfoEquipo(): InformacionEquipoDTO {
     return this.equipoService.getInformacionEquipo()
   }
 
   //Filtrar integrantes segun su area, indicando quien es el lider de dicha area
-  @Get('integrante/area/:area')
-  getIntegrantesArea(@Param('area') area: string) {
+  @Get('integrantes/area/:area')
+  getIntegrantesArea(@Param('area', new ParseEnumPipe(areasEquipo)) area: areasEquipo) {
     return this.equipoService.getIntegrantesArea(area as areasEquipo);
   }
   //Conseguir todos los integrantes del equipo, indicando si es lider o no
@@ -26,7 +25,7 @@ export class EquipoController {
     return this.equipoService.getTodosLosIntegrantes();
   }
   //De acuerdo con un rut, retornar el integrante al que corresponde
-  @Get(`integrante/:rut`)
+  @Get(`integrantes/:rut`)
   getFiltrarPorRut(@Param("rut") rut: string): Integrante {
     return this.equipoService.GetFiltrarPorRut(rut);
   }
@@ -39,7 +38,7 @@ export class EquipoController {
 
   //Informacion del E-Commerce /nombre, descrpción, tipo y objetivos)
   @Get('ecommerce')
-  getEcommerce(): string {
+  getEcommerce(): EcommerceDto {
     return this.equipoService.getEcommerce();
   }
 }
